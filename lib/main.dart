@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youtube_analyzer/common/database.dart';
+import 'package:youtube_analyzer/screens/login_page.dart';
 
 import 'package:youtube_analyzer/screens/main_page.dart';
-
-
 
 final theme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
@@ -16,7 +17,6 @@ final theme = ThemeData(
       bodyMedium: TextStyle(color: Colors.white),
     ),
   ),
-  
   scaffoldBackgroundColor: Colors.black,
   appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
   inputDecorationTheme: const InputDecorationTheme(
@@ -29,7 +29,9 @@ final theme = ThemeData(
   ),
 );
 
-void main() {
+void main() async {
+  await Database.init();
+
   runApp(const MainApp());
 }
 
@@ -39,10 +41,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Youtube Analyzer',
-      debugShowCheckedModeBanner: false,
-      theme: theme,
-      home: const MainPage(),
-    );
+        title: 'Youtube Analyzer',
+        debugShowCheckedModeBanner: false,
+        theme: theme,
+        home: const LoginPage() //const MainPage(),
+        );
   }
 }

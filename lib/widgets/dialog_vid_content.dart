@@ -42,7 +42,7 @@ class _DialogVidContentState extends State<DialogVidContent> {
                 )
               ],
             ),
-            title: Text('${widget.authorVid} — ${widget.titleVid}'),
+            title: Text('${widget.authorVid} — ${widget.titleVid}'), 
           ),
           body: TabBarView(
             children: [

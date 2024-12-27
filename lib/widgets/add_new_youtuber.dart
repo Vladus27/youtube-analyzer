@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/data/chanel_service.dart';
 
 import 'package:youtube_analyzer/data/dummy_data.dart'; // import basic url and token
@@ -95,7 +96,7 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
       url,
       headers: {
         'x-service-name': 'SocialMediaApi',
-        'x-token': basicXtocen,
+        'x-token': Database.get(Database.personAuthTokenKey),
       },
     );
 

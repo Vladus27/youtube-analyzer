@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/models/youtube.dart';
 
 List<Youtuber> youtubers = [
@@ -19,4 +20,5 @@ List<VideoContent> content = [
 
 const String basicUrl = 'westeuv1-uiapi2387d-webpi-dev.azurewebsites.net';
 
-const String basicXtocen = '34e0d199aaf64abebfe9bde5c5b18730';
+String basicXtocen = Database.get(Database.personAuthTokenKey);
+//'34e0d199aaf64abebfe9bde5c5b18730';
