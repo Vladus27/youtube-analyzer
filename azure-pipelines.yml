@@ -1,0 +1,54 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+parameters:
+  - name: buildEnvironment
+    displayName: Select the environment
+    type: string
+    default: dev
+    values:
+      - dev
+      - production
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: FlutterInstall@0
+  inputs:
+    mode: 'auto'
+    channel: 'stable'
+    version: 'latest'
+- task: FlutterBuild@0
+  displayName: "build for develop"
+  condition: eq('${{ parameters.buildEnvironment }}', 'dev')
+  inputs:
+    target: 'web'
+    projectDirectory: 'back_test_ui/'
+    buildFlavour: 'production'
+    buildName: '1.0.0'
+    dartDefine: 'API_URL=$(api_endpoint_dev)'
+- task: FlutterBuild@0
+  displayName: "build for production"
+  condition: eq('${{ parameters.buildEnvironment }}', 'production')
+  inputs:
+    target: 'web'
+    projectDirectory: 'back_test_ui/'
+    buildFlavour: 'production'
+    buildName: '1.0.0'
+    dartDefine: 'API_URL=$(api_endpoint_prod)'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'back_test_ui/build/web'
+    Contents: '**'
+    TargetFolder: '$(build.artifactstagingdirectory)/back_test_ui'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/back_test_ui'
+    ArtifactName: 'drop_back_test_ui'
+    publishLocation: 'Container'
