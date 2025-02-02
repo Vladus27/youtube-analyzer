@@ -29,7 +29,7 @@ steps:
   condition: eq('${{ parameters.buildEnvironment }}', 'dev')
   inputs:
     target: 'web'
-    projectDirectory: 'back_test_ui/'
+    projectDirectory: '/'
     buildFlavour: 'production'
     buildName: '1.0.0'
     dartDefine: 'API_URL=$(api_endpoint_dev)'
@@ -38,17 +38,17 @@ steps:
   condition: eq('${{ parameters.buildEnvironment }}', 'production')
   inputs:
     target: 'web'
-    projectDirectory: 'back_test_ui/'
+    projectDirectory: '/'
     buildFlavour: 'production'
     buildName: '1.0.0'
     dartDefine: 'API_URL=$(api_endpoint_prod)'
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'back_test_ui/build/web'
+    SourceFolder: 'build/web'
     Contents: '**'
-    TargetFolder: '$(build.artifactstagingdirectory)/back_test_ui'
+    TargetFolder: '$(build.artifactstagingdirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/back_test_ui'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop_back_test_ui'
     publishLocation: 'Container'
