@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:youtube_analyzer/data/dummy_data.dart'; // import basic url and token
 
 class ChannelService {
-  static const String _baseUrl = basicUrl;
+  static final String _baseUrl = basicUrl;
 
   // Додавання нового каналу
   static Future<bool> addChannel(String channelUsername) async {

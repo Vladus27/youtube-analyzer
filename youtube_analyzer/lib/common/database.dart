@@ -34,16 +34,19 @@ class Database {
     //   dirPath = appDocumentsDir.path;
     // }
 
+
+//open box for database
     box = await Hive.openBox('database',
         path: dirPath,
         encryptionCipher: HiveAesCipher(encryptionKeyDecode));
   }
 
   static void set(dynamic key, dynamic value) {
-    box.put(key, value);
+    box.put(key, value); //write elements into database
+    
   }
 
-  static T? get<T>(dynamic key) {
+  static T? get<T>(dynamic key) { // read elements from database
     try {
       return box.get(key) as T;
     } catch (e) {

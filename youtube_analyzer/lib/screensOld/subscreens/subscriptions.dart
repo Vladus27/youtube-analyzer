@@ -4,13 +4,12 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 
-import 'package:youtube_analyzer/data/chanel_service.dart';
 
 import 'package:youtube_analyzer/data/dummy_data.dart'; // import basic url and token
 
 import 'package:youtube_analyzer/models/youtube.dart';
-import 'package:youtube_analyzer/widgets/add_new_youtuber.dart';
-import 'package:youtube_analyzer/widgets/dialog_prompt.dart';
+import 'package:youtube_analyzer/widgetsOld/add_new_youtuber.dart';
+import 'package:youtube_analyzer/widgetsOld/dialog_prompt.dart';
 
 class Subscriptions extends StatefulWidget {
   const Subscriptions({super.key, required this.onSelectedYoutuber});
@@ -38,7 +37,7 @@ class _SubscriptionsState extends State<Subscriptions> {
           'x-token': basicXtocen,
         },
       );
-      print(response.body);
+      debugPrint(response.body);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -53,17 +52,17 @@ class _SubscriptionsState extends State<Subscriptions> {
             setState(() {});
           }
         } else {
-          print(' Помилка API: ${data['errors']}');
+          debugPrint(' Помилка API: ${data['errors']}');
         }
       } else {
-        print(' Помилка HTTP: ${response.statusCode}');
+        debugPrint(' Помилка HTTP: ${response.statusCode}');
       }
     } catch (e) {
-      print(' Виникла помилка: $e');
+      debugPrint(' Виникла помилка: $e');
     }
   }
 
-  Future<void> _deleteYoutuber(String channelId) async {
+  Future<void> _deleteYoutuber  (String channelId) async {
     final url = Uri.https(basicUrl, "/api/youtube/delete-channel/$channelId");
     final response = await http.get(
       url,
@@ -80,12 +79,12 @@ class _SubscriptionsState extends State<Subscriptions> {
           // subscrtiptionYT.removeAt(index);
           subscrtiptionYT.removeWhere((youtuber) => youtuber.id == channelId);
         });
-        print('Канал успішно видалено');
+        debugPrint('Канал успішно видалено');
       } else {
-        print('Помилка при видаленні каналу: ${data['errors']}');
+        debugPrint('Помилка при видаленні каналу: ${data['errors']}');
       }
     } else {
-      print('Не вдалося видалити канал. Статус код: ${response.statusCode}');
+      debugPrint('Не вдалося видалити канал. Статус код: ${response.statusCode}');
     }
   }
 
@@ -100,10 +99,13 @@ class _SubscriptionsState extends State<Subscriptions> {
 
   @override
   Widget build(BuildContext context) {
+    
+    
+    
     void addYotuber(Youtuber youtuber) {
       setState(
         () {
-          subscrtiptionYT.add(youtuber);
+          subscrtiptionYT.add(youtuber);          
         },
       );
     }
@@ -156,7 +158,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                         PopupMenuItem(
                           value: 'Delete',
                           onTap: () {
-                            print('chanell  ${subscrtiptionYT[index].name} Id: ${subscrtiptionYT[index].id}');
+                            debugPrint('channel  ${subscrtiptionYT[index].name} Id: ${subscrtiptionYT[index].id}');
                             _deleteYoutuber(subscrtiptionYT[index].id);
                             //removeYouTuber(index);
                             setState(() {

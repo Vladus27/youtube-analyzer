@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/data/dummy_data.dart';
 import 'package:youtube_analyzer/models/youtube.dart';
-import 'package:youtube_analyzer/widgets/dialog_vid_content.dart';
+import 'package:youtube_analyzer/widgetsOld/dialog_vid_content.dart';
 
 class ContentGridItem extends StatelessWidget {
   const ContentGridItem(

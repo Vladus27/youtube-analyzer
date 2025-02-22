@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_analyzer/common/database.dart';
-import 'package:youtube_analyzer/data/chanel_service.dart';
 
 import 'package:youtube_analyzer/data/dummy_data.dart'; // import basic url and token
 
@@ -22,7 +23,7 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
   final _formKey = GlobalKey<FormState>();
   final _usernameChannelController = TextEditingController();
 
-  bool _isLoading = false;
+  bool isLoading = false;
 
   void _circularLoad() {
     showDialog(
@@ -51,14 +52,13 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(isSucceed
-                  ? 'Youtuber is added succesfully'
-                  : 'Something went wrong..'),
+                  ? 'Youtuber is added succesfully! \n please refresh the page, because the hobby developer messed up '
+                  : 'Something went wrong..', textAlign: TextAlign.center),
               const SizedBox(
                 height: 24,
               ),
               ElevatedButton(
                 onPressed: () {
-                  
                   Navigator.of(context).pop();
                 },
                 child: const Text('Ok'),
@@ -100,13 +100,20 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
       },
     );
 
-    print('Status code when adding Youtuber: ${response.statusCode}');
+    final data = json.decode(response.body);
+    if (data['isOk']) {
+      setState(() {
+        print( widget.onAddYoutuber);
+      });
+    }
+
+    debugPrint('Status code when adding Youtuber: ${response.statusCode}');
 
     return response.statusCode == 200;
   }
 
   void _submitNewYotuber() async {
-    print('object');
+    debugPrint('object');
     String username = _usernameChannelController.text.trim();
 
     if (username.startsWith('@')) {
@@ -118,9 +125,9 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
       return;
     }
     if (_formKey.currentState!.validate()) {
-      _isLoading = true;
+      isLoading = true;
 
-      if (_isLoading) {
+      if (isLoading) {
         _circularLoad();
       }
 
@@ -141,11 +148,13 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
         return;
       }
 
-      _isLoading = false;
+      isLoading = false;
 
       Navigator.of(context).pop();
 
       _isSucceedRequest(isValidChannel);
+
+      setState(() {});
     }
   }
 

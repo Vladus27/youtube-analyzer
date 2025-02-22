@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:youtube_analyzer/models/youtube.dart';
-import 'package:youtube_analyzer/widgets/content_grid_item.dart';
+import 'package:youtube_analyzer/widgetsOld/content_grid_item.dart';
 
 class Content extends StatelessWidget {
   const Content({

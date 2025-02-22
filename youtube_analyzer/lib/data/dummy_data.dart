@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/models/youtube.dart';
+import 'package:youtube_analyzer/reposetories/subcription_YT/models/environment.dart';
 
 List<Youtuber> youtubers = [
   Youtuber(id: '1', name: 'Freezy code', logo: 'lib/assets/image1.jpg', username: 'link'),
@@ -18,7 +18,6 @@ List<VideoContent> content = [
 ];
 
 
-const String basicUrl = 'westeuv1-uiapi2387d-webpi-dev.azurewebsites.net';
+ String basicUrl = Environment.apiUrl;
 
 String basicXtocen = Database.get(Database.personAuthTokenKey);
-//'34e0d199aaf64abebfe9bde5c5b18730';

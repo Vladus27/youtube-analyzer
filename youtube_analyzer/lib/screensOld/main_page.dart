@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_analyzer/common/database.dart';
 
 import 'package:youtube_analyzer/data/dummy_data.dart';
 
 import 'package:youtube_analyzer/models/youtube.dart';
-import 'package:youtube_analyzer/screens/subscreens/content.dart';
-import 'package:youtube_analyzer/screens/subscreens/subscriptions.dart';
+import 'package:youtube_analyzer/screensOld/subscreens/content.dart';
+import 'package:youtube_analyzer/screensOld/subscreens/subscriptions.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -24,23 +25,18 @@ class _MainPageState extends State<MainPage> {
   void _selectedContent(String selectedYoutuber) {
     setState(
       () {
-        selectedContent = [
-          
-        ];
+        selectedContent = [];
       },
     );
     _loadVideos(selectedYoutuber);
   }
 
   Future<void> _loadVideos(String channelId) async {
-    final url = Uri.https(basicUrl,
-        "/api/youtube/get-channel-videos/$channelId");
+    final url =
+        Uri.https(basicUrl, "/api/youtube/get-channel-videos/$channelId");
     final response = await http.get(
       url,
-      headers: {
-        'x-service-name': 'SocialMediaApi',
-        'x-token': basicXtocen
-      },
+      headers: {'x-service-name': 'SocialMediaApi', 'x-token': basicXtocen},
     );
 
     if (response.statusCode == 200) {
@@ -50,18 +46,19 @@ class _MainPageState extends State<MainPage> {
           .toList();
 
       setState(() {
-        idChannel = channelId;        
-        print('data: $data ');
+        idChannel = channelId;
+        debugPrint('data: $data ');
         selectedContent = videos;
       });
     } else {
       // Обробка помилок
-      print('Failed to load videos');
+      debugPrint('Failed to load videos');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('user auth token: ${Database.get(Database.personAuthTokenKey)}');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Analyzer'),
@@ -81,7 +78,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ],
-      ),
+      ),      
     );
   }
 }

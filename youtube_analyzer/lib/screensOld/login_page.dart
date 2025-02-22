@@ -1,10 +1,8 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:youtube_analyzer/common/database.dart';
-import 'package:youtube_analyzer/screens/main_page.dart';
-
-
+import 'package:youtube_analyzer/reposetories/subcription_YT/YouTube_repository.dart';
+import 'package:youtube_analyzer/screensOld/main_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool isLoading = false;
+  bool isLoading = false;  
   final _verificationCode = TextEditingController();
 
   @override
@@ -30,27 +28,35 @@ class _LoginPageState extends State<LoginPage> {
       body: Row(
         children: [
           Expanded(
-              flex: 5,
-              child: Container(
-                color: Theme.of(context).colorScheme.onPrimary,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'YouTube Analyzer',
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayLarge!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
+            flex: 5,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.onPrimary,
+                    Theme.of(context).colorScheme.surface,
                   ],
                 ),
-              )),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'YouTube Analyzer',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Expanded(
             flex: 5,
             child: Center(
-              child: Container(
+              child: SizedBox(
                 height: 500,
                 width: 450,
                 //color: Theme.of(context).colorScheme.surfaceContainer,
@@ -154,37 +160,75 @@ class _LoginPageState extends State<LoginPage> {
                       child: FilledButton.icon(
                         onPressed: isLoading
                             ? null
-                            : () {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                      
-                                Future.delayed(Duration(seconds: 2), () { // for testing circular indicator
+                            : () async {
+                                if (mounted) {
                                   setState(() {
-                                    isLoading = false;
+                                    isLoading = true;
                                   });
-                                });
-                      
+                                }                              
+                                // Future.delayed(const Duration(seconds: 2), () {
+                                //   // for testing circular indicator
+                                //   setState(() {
+                                //     isLoading = false;
+                                //   });
+                                // });
+
                                 if (_verificationCode.text.length != 32) {
                                   setState(() {
                                     isLoading = false;
                                   });
-                                  return; //fail show some snicker bar
-                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                          'Check your Verification code'),
+                                      action: SnackBarAction(
+                                        label: 'Ok',
+                                        onPressed: () {
+                                          // Code to execute.
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                  return; 
+                                }
+                                
+                                bool isLoadUser = await YoutubeRepository().checkPersonAuthTokenKey(_verificationCode.text);                                
+                                if (isLoadUser) {
+                                  Database.set(Database.personAuthTokenKey,
+                                      _verificationCode.text);
                                   setState(() {
                                     isLoading = false;
                                   });
-                                  Database.set(Database.personAuthTokenKey,
-                                      _verificationCode.text);
-                      
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const MainPage()),
+                                      builder: (context) => const MainPage(),
+                                    ),
                                   );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                          'This user unauthorized! Check your Verification code'),
+                                      action: SnackBarAction(
+                                        label: 'ok',
+                                        onPressed: () {
+                                          // Code to execute.
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                  setState(() {
+                                    isLoading = false;
+                                  });
                                 }
                               },
-                        icon: isLoading ? null : const Icon(Icons.person),
+                        icon: isLoading
+                            ? null
+                            : Icon(
+                                Icons.person,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         label: isLoading
                             ? CircularProgressIndicator(
                                 valueColor: AlwaysStoppedAnimation<Color>(
@@ -193,9 +237,8 @@ class _LoginPageState extends State<LoginPage> {
                             : const Text('Log In'),
                         style: FilledButton.styleFrom(
                           backgroundColor:
-                              Theme.of(context).colorScheme.primaryContainer,
+                              Theme.of(context).colorScheme.onPrimary,
                           foregroundColor: Colors.white,
-                          
                         ),
                       ),
                     ),
@@ -207,5 +250,5 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
-  }
+  } 
 }
