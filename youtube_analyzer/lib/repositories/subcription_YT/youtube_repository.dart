@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:youtube_analyzer/common/database.dart';
-import 'package:youtube_analyzer/reposetories/subcription_YT/models/environment.dart';
-import 'package:youtube_analyzer/reposetories/subcription_YT/models/subscription_YT.dart';
+import 'package:youtube_analyzer/repositories/subcription_YT/models/environment.dart';
+import 'package:youtube_analyzer/repositories/subcription_YT/models/subscription_yt.dart';
+
+
 
 class YoutubeRepository {
   // add here http request methods
