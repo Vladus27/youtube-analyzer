@@ -29,7 +29,7 @@ steps:
   condition: eq('${{ parameters.buildEnvironment }}', 'dev')
   inputs:
     target: 'web'
-    projectDirectory: '/'
+    projectDirectory: 'youtube_analyzer/'
     buildFlavour: 'production'
     buildName: '1.0.0'
     dartDefine: 'API_URL=$(api_endpoint_dev)'
@@ -38,13 +38,13 @@ steps:
   condition: eq('${{ parameters.buildEnvironment }}', 'production')
   inputs:
     target: 'web'
-    projectDirectory: '/'
+    projectDirectory: 'youtube_analyzer/'
     buildFlavour: 'production'
     buildName: '1.0.0'
     dartDefine: 'API_URL=$(api_endpoint_prod)'
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'build/web'
+    SourceFolder: 'youtube_analyzer/build/web'
     Contents: '**'
     TargetFolder: '$(build.artifactstagingdirectory)'
 - task: PublishBuildArtifacts@1
