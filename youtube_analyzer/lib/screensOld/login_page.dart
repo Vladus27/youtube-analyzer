@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:youtube_analyzer/common/database.dart';
-import 'package:youtube_analyzer/reposetories/subcription_YT/YouTube_repository.dart';
+import 'package:youtube_analyzer/repositories/subcription_channels/youtube_repository.dart';
+
 import 'package:youtube_analyzer/screensOld/main_page.dart';
 
 class LoginPage extends StatefulWidget {

@@ -1,45 +1,21 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:youtube_analyzer/common/database.dart';
 
-import 'package:youtube_analyzer/data/dummy_data.dart';
-import 'package:youtube_analyzer/modelsOld/youtube.dart'; // import basic url and token
+import 'package:youtube_analyzer/repositories/subcription_channels/models/subscription_channel.dart';
+import 'package:youtube_analyzer/repositories/subcription_channels/youtube_repository.dart';
 
-
-
-class AddNewYoutuber extends StatefulWidget {
-  const AddNewYoutuber({super.key, required this.onAddYoutuber});
-
-  final void Function(Youtuber youtuber) onAddYoutuber;
+class AddingChannel extends StatefulWidget {
+  const AddingChannel({super.key, required this.onAddingChannel});
+  final void Function(String username) onAddingChannel;
 
   @override
-  State<AddNewYoutuber> createState() {
-    return _AddNewYoutuberState();
-  }
+  State<AddingChannel> createState() => _AddingChannelState();
 }
 
-class _AddNewYoutuberState extends State<AddNewYoutuber> {
+class _AddingChannelState extends State<AddingChannel> {
   final _formKey = GlobalKey<FormState>();
   final _usernameChannelController = TextEditingController();
 
   bool isLoading = false;
-
-  void _circularLoad() {
-    showDialog(
-      context: context,
-      builder: (ctx) => const Dialog(
-        child: SizedBox(
-          height: 200,
-          width: 250,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      ),
-    );
-  }
 
   void _isSucceedRequest(bool isSucceed) {
     showDialog(
@@ -52,9 +28,11 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(isSucceed
-                  ? 'Youtuber is added succesfully! \n please refresh the page, because the hobby developer messed up '
-                  : 'Something went wrong..', textAlign: TextAlign.center),
+              Text(
+                  isSucceed
+                      ? 'Youtuber is added succesfully! \n please refresh the page, because the hobby developer messed up '
+                      : 'Something went wrong..',
+                  textAlign: TextAlign.center),
               const SizedBox(
                 height: 24,
               ),
@@ -90,29 +68,6 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
     );
   }
 
-  Future<bool> _validateChannel(String username) async {
-    final url = Uri.https(basicUrl, "/api/youtube/add-channel/$username");
-
-    final response = await http.post(
-      url,
-      headers: {
-        'x-service-name': 'SocialMediaApi',
-        'x-token': Database.get(Database.personAuthTokenKey),
-      },
-    );
-
-    final data = json.decode(response.body);
-    if (data['isOk']) {
-      setState(() {
-        print( widget.onAddYoutuber);
-      });
-    }
-
-    debugPrint('Status code when adding Youtuber: ${response.statusCode}');
-
-    return response.statusCode == 200;
-  }
-
   void _submitNewYotuber() async {
     debugPrint('object');
     String username = _usernameChannelController.text.trim();
@@ -128,14 +83,14 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
     if (_formKey.currentState!.validate()) {
       isLoading = true;
 
-      if (isLoading) {
-        _circularLoad();
+      bool isValidChannel = await YoutubeRepository().addChannel(username);
+
+      if (isValidChannel) {
+        widget.onAddingChannel(username);
       }
 
-      bool isValidChannel = await _validateChannel(username);
-
       // if (isValidChannel) {
-      //   widget.onAddYoutuber(
+      //   widget.onAdd Youtuber(
       //     Youtuber(
       //       id: '1', //temp id user
       //       name: _titleChannelController.text,
@@ -144,24 +99,7 @@ class _AddNewYoutuberState extends State<AddNewYoutuber> {
       //     ),
       //   );
       // } else {}
-
-      if (!context.mounted) {
-        return;
-      }
-
-      isLoading = false;
-
-      Navigator.of(context).pop();
-
-      _isSucceedRequest(isValidChannel);
-
-      setState(() {});
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override

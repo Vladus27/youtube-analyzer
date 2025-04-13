@@ -19,6 +19,7 @@ class Youtuber {
       id: json['id'] ?? '',
       name: json['title'] ?? 'No Title',
       aiPrompt: json['aiPrompt'],
+      logo: json['imageUrl'],
     );
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/features/login_page/widgets/login_page_input.dart';
-import 'package:youtube_analyzer/repositories/subcription_YT/youtube_repository.dart';
+import 'package:youtube_analyzer/repositories/subcription_channels/youtube_repository.dart';
 import 'package:youtube_analyzer/screensOld/main_page.dart';
 
 class LoginPageVerification extends StatefulWidget {

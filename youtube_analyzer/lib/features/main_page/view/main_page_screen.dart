@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/common/database.dart';
+import 'package:youtube_analyzer/features/main_page/view/content_channel/widgets/content.dart';
 
-import 'package:youtube_analyzer/data/dummy_data.dart';
+import 'package:youtube_analyzer/repositories/subcription_channels/models/subscription_channel.dart'; //model
+import 'package:youtube_analyzer/repositories/subcription_channels/youtube_repository.dart'; //rep
 
-import 'package:youtube_analyzer/modelsOld/youtube.dart';
-import 'package:youtube_analyzer/screensOld/subscreens/content.dart';
 import 'package:youtube_analyzer/screensOld/subscreens/subscriptions.dart';
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -23,37 +20,20 @@ class _MainPageState extends State<MainPage> {
   String idChannel = '';
 
   void _selectedContent(String selectedYoutuber) {
-    setState(
-      () {
-        selectedContent = [];
-      },
-    );
+    setState(() {
+      selectedContent = [];
+    });
     _loadVideos(selectedYoutuber);
   }
 
   Future<void> _loadVideos(String channelId) async {
-    final url =
-        Uri.https(basicUrl, "/api/youtube/get-channel-videos/$channelId");
-    final response = await http.get(
-      url,
-      headers: {'x-service-name': 'SocialMediaApi', 'x-token': basicXtocen},
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final videos = (data['value']['items'] as List)
-          .map((videoData) => VideoContent.fromJson(videoData))
-          .toList();
-
-      setState(() {
-        idChannel = channelId;
-        debugPrint('data: $data ');
-        selectedContent = videos;
-      });
-    } else {
-      // Обробка помилок
-      debugPrint('Failed to load videos');
-    }
+    debugPrint('Успішно вивсітлились відоси, МАБОООЙ');
+    List<VideoContent> videos =
+        await YoutubeRepository().getChannelVideos(channelId);
+    setState(() {
+      idChannel = channelId;
+      selectedContent = videos;
+    });
   }
 
   @override
@@ -67,7 +47,7 @@ class _MainPageState extends State<MainPage> {
         children: [
           Expanded(
               flex: 2,
-              child: Subscriptions( //change it to test this shit            
+              child: Subscriptions(
                 onSelectedYoutuber: _selectedContent,
               )),
           Expanded(
@@ -78,7 +58,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ],
-      ),      
+      ),
     );
   }
 }

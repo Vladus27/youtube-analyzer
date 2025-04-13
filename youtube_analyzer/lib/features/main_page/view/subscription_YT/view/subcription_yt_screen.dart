@@ -1,103 +1,51 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-import 'package:youtube_analyzer/data/dummy_data.dart'; // import basic url and token
-import 'package:youtube_analyzer/modelsOld/youtube.dart';
-import 'package:youtube_analyzer/widgetsOld/add_new_youtuber.dart';
-import 'package:youtube_analyzer/widgetsOld/dialog_prompt.dart';
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 
-class Subscriptions extends StatefulWidget {
-  const Subscriptions({super.key, required this.onSelectedYoutuber});
+// import 'package:youtube_analyzer/data/dummy_data.dart'; // import basic url and token
+import 'package:youtube_analyzer/modelsOld/youtube.dart';
+import 'package:youtube_analyzer/repositories/subcription_channels/youtube_repository.dart';
+import 'package:youtube_analyzer/widgetsOld/add_new_youtuber.dart';
+import 'package:youtube_analyzer/widgetsOld/dialog_prompt.dart';
+
+class SubscriptionsYtScreen extends StatefulWidget {
+  const SubscriptionsYtScreen({super.key, required this.onSelectedYoutuber});
   final void Function(String author) onSelectedYoutuber;
 
   @override
-  State<Subscriptions> createState() => _SubscriptionsState();
+  State<SubscriptionsYtScreen> createState() => _SubscriptionsYtScreenState();
 }
 
-class _SubscriptionsState extends State<Subscriptions> {
+class _SubscriptionsYtScreenState extends State<SubscriptionsYtScreen> {
   List<Youtuber> subscrtiptionYT = [];
 
-  void _loadItems() async {
-    final url = Uri.https(basicUrl, "/api/youtube/get-channel-list");
+  void _deleteYoutuber(String youtuberId) async {
+    final bool isDeleted = await YoutubeRepository().deleteChannel(youtuberId);
 
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'x-service-name': 'SocialMediaApi',
-          'x-token': basicXtocen,
-        },
-      );
-      debugPrint(response.body);
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        if (data['isOk'] == true) {
-          final List<dynamic> items = data['value']['items'];
-          // Мапимо отримані дані у список Youtuber
-          subscrtiptionYT = items.map((item) {
-            return Youtuber.fromJson(item);
-          }).toList();
-          if (mounted) {
-            setState(() {});
-          }
-        } else {
-          debugPrint(' Помилка API: ${data['errors']}');
-        }
-      } else {
-        debugPrint(' Помилка HTTP: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint(' Виникла помилка: $e');
+    if (isDeleted) {
+      debugPrint("Youtuber is deleted Succsessfully");
+      setState(() {});
+    } else {
+      debugPrint("something went wrong");
     }
   }
 
-  Future<void> _deleteYoutuber(String channelId) async {
-    final url = Uri.https(basicUrl, "/api/youtube/delete-channel/$channelId");
-    final response = await http.get(
-      url,
-      headers: {
-        'x-service-name': 'SocialMediaApi',
-        'x-token': basicXtocen,
+  void _addYoutuber(Youtuber youtuber) {
+    setState(
+      () {
+        subscrtiptionYT.add(youtuber);
       },
     );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['isOk']) {
-        setState(() {
-          // subscrtiptionYT.removeAt(index);
-          subscrtiptionYT.removeWhere((youtuber) => youtuber.id == channelId);
-        });
-        debugPrint('Канал успішно видалено');
-      } else {
-        debugPrint('Помилка при видаленні каналу: ${data['errors']}');
-      }
-    } else {
-      debugPrint(
-          'Не вдалося видалити канал. Статус код: ${response.statusCode}');
-    }
   }
 
   @override
   void initState() {
-    _loadItems();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    void addYotuber(Youtuber youtuber) {
-      setState(
-        () {
-          subscrtiptionYT.add(youtuber);
-        },
-      );
-    }
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: FloatingActionButton(
@@ -109,7 +57,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                 width: 550,
                 height: 250,
                 child: AddNewYoutuber(
-                  onAddYoutuber: addYotuber,
+                  onAddYoutuber: _addYoutuber,
                 ),
               ),
             ),
@@ -146,11 +94,6 @@ class _SubscriptionsState extends State<Subscriptions> {
                         backgroundImage: AssetImage('lib/assets/image1.jpg'),
                       ),
                     ),
-
-                    //  CircleAvatar(
-                    //    backgroundImage: CachedNetworkImageProvider(subscrtiptionYT[index].logo,
-                    //    ),
-                    // ),
                     trailing: PopupMenuButton(
                       itemBuilder: (ctx) => [
                         PopupMenuItem(

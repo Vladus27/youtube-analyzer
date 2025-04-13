@@ -1,6 +1,6 @@
 import 'package:youtube_analyzer/common/database.dart';
-import 'package:youtube_analyzer/models/youtube.dart';
-import 'package:youtube_analyzer/repositories/subcription_YT/models/environment.dart';
+import 'package:youtube_analyzer/modelsOld/youtube.dart';
+import 'package:youtube_analyzer/repositories/subcription_channels/models/environment.dart';
 
 List<Youtuber> youtubers = [
   Youtuber(id: '1', name: 'Freezy code', logo: 'lib/assets/image1.jpg', username: 'link'),

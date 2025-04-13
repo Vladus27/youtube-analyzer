@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'package:youtube_analyzer/modelsOld/youtube.dart';
-import 'package:youtube_analyzer/widgetsOld/content_grid_item.dart';
+import 'package:youtube_analyzer/features/main_page/view/content_channel/widgets/content_gridview.dart';
+import 'package:youtube_analyzer/repositories/subcription_channels/models/subscription_channel.dart';
 
 class Content extends StatelessWidget {
-  const Content({
-    super.key,
-    this.youtubersContent = const [],
-    this.emptyContent = 'This board is empty! \nSelect any youtuber to see his videos',
-    required this.channelId
-  });
+  const Content(
+      {super.key,
+      this.youtubersContent = const [],
+      this.emptyContent =
+          'This board is empty! \nSelect any youtuber to see his videos',
+      required this.channelId});
   final List<VideoContent> youtubersContent;
   final String emptyContent;
   final String channelId;
 
-
   @override
   Widget build(BuildContext context) {
+    
     return youtubersContent.isEmpty
         ? Center(
             child: Text(
@@ -25,7 +25,7 @@ class Content extends StatelessWidget {
                   .textTheme
                   .displayLarge!
                   .copyWith(color: Theme.of(context).colorScheme.primary),
-                  //textAlign: TextAlign.center,
+              //textAlign: TextAlign.center,
             ),
           )
         : GridView(
@@ -38,7 +38,11 @@ class Content extends StatelessWidget {
                 mainAxisSpacing: 15 //spacing between the rows (verticals)
                 ),
             children: youtubersContent
-                .map((content) => ContentGridItem(content: content, channelId: channelId,))
+                .map((content) => ContentGridItem(
+                      content: content,
+                      channelId: channelId,
+                      channelExternalId: content.externalId,
+                    ))
                 .toList(),
           );
   }
