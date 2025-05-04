@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPageHyperText extends StatelessWidget {
   const LoginPageHyperText({
@@ -15,6 +16,15 @@ class LoginPageHyperText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final Uri botUrl = Uri.parse('https://t.me/piescript_bot');
+    Future<void> openTelegram() async {
+      try {
+        await launchUrl(botUrl, mode: LaunchMode.platformDefault);
+      } catch (e) {
+        debugPrint('Could not launch $botUrl: $e');
+      }
+    }
+
     return RichText(
       text: TextSpan(
         text: startText,
@@ -25,7 +35,8 @@ class LoginPageHyperText extends StatelessWidget {
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                 onTap: () {
-                  print('You pressed');
+                  print('You pressed, respect');
+                  openTelegram();
                 },
                 child: Container(
                   decoration: BoxDecoration(

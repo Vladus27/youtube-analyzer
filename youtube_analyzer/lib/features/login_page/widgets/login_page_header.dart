@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:youtube_analyzer/features/login_page/widgets/login_page_hyper_text.dart';
 
 class LoginPageHeader extends StatelessWidget {
@@ -16,6 +17,7 @@ class LoginPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final txtTheme = Theme.of(context).textTheme;
     return Center(
       child: Column(

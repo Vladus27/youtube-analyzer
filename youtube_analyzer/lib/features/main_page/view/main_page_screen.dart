@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/common/database.dart';
-import 'package:youtube_analyzer/features/main_page/view/content_channel/widgets/content.dart';
 
-import 'package:youtube_analyzer/repositories/subcription_channels/models/subscription_channel.dart'; //model
-import 'package:youtube_analyzer/repositories/subcription_channels/youtube_repository.dart'; //rep
 
-import 'package:youtube_analyzer/screensOld/subscreens/subscriptions.dart';
+import 'package:youtube_analyzer/features/main_page/view/content_channel/view/content_channel_grid_view_screen.dart';
+import 'package:youtube_analyzer/features/main_page/view/subscription_channels/view/subscription_channels_screen.dart';
+
+import 'package:youtube_analyzer/repositories/models/subscription_channel.dart'; //model
+import 'package:youtube_analyzer/repositories/widgets/handle_verified_auth_token.dart';
+import 'package:youtube_analyzer/repositories/youtube_repository.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -16,24 +18,38 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<VideoContent> selectedContent = [];
-
+  bool isLoading = false;
   String idChannel = '';
+  String contentAuthor = '';
 
-  void _selectedContent(String selectedYoutuber) {
+  void _selectedContent(String selectedYoutuber,[String channelName = '']) {
     setState(() {
       selectedContent = [];
+      isLoading = true;
     });
-    _loadVideos(selectedYoutuber);
+    _loadVideos(selectedYoutuber, channelName);
   }
 
-  Future<void> _loadVideos(String channelId) async {
-    debugPrint('Успішно вивсітлились відоси, МАБОООЙ');
+  Future<void> _loadVideos(String channelId, String channelName) async {
+    await handleVerifiedAuthTokenAsync(ctx: context);
     List<VideoContent> videos =
         await YoutubeRepository().getChannelVideos(channelId);
     setState(() {
       idChannel = channelId;
       selectedContent = videos;
+      isLoading = false;
+      contentAuthor = channelName;
     });
+  }
+
+  handleVerifCode() async {
+    await handleVerifiedAuthTokenAsync(ctx: context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handleVerifCode();
   }
 
   @override
@@ -47,14 +63,16 @@ class _MainPageState extends State<MainPage> {
         children: [
           Expanded(
               flex: 2,
-              child: Subscriptions(
-                onSelectedYoutuber: _selectedContent,
+              child: SubscriptionsChannelsScreen(
+                onSelectedChannelsContent: _selectedContent,
               )),
           Expanded(
             flex: 9,
-            child: Content(
+            child: ContentChannelGridViewScreen(
               youtubersContent: selectedContent,
               channelId: idChannel,
+              isLoading: isLoading,
+              contentAuthor: contentAuthor,
             ),
           ),
         ],

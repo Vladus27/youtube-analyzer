@@ -6,19 +6,22 @@ class SubscriptionChannel {
     required this.channelID,
     required this.channelTitle,
     required this.aiPrompt,
-    required this.youtuberImageUrl,
+    required this.promptProperties,
+    required this.channelImageUrl,
   });
   final String channelID;
   final String channelTitle;
   final String? aiPrompt;
-  final String youtuberImageUrl;
+  final List promptProperties;
+  final String channelImageUrl;
 
   factory SubscriptionChannel.fromJson(Map<String, dynamic> json) {
     return SubscriptionChannel(
       channelID: json['id'],
       channelTitle: json['title'],
       aiPrompt: json['aiPrompt'],
-      youtuberImageUrl: json['imageUrl'],
+      promptProperties: ['promptProperties'],
+      channelImageUrl: json['imageUrl'],
     );
   }
 }

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/features/login_page/widgets/login_page_input.dart';
-import 'package:youtube_analyzer/repositories/subcription_channels/youtube_repository.dart';
-import 'package:youtube_analyzer/screensOld/main_page.dart';
+import 'package:youtube_analyzer/features/main_page/view/main_page_screen.dart';
+import 'package:youtube_analyzer/repositories/widgets/show_snack_bar.dart';
+import 'package:youtube_analyzer/repositories/youtube_repository.dart';
+// import 'package:youtube_analyzer/screensOld/main_page.dart';
+
 
 class LoginPageVerification extends StatefulWidget {
   const LoginPageVerification({super.key, required this.titleField});
@@ -23,9 +26,12 @@ class _LoginPageVerificationState extends State<LoginPageVerification> {
     super.dispose();
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
-    final clrTheme = Theme.of(context).colorScheme;
+    final colorTheme = Theme.of(context).colorScheme;
 
     void validationAuthToken(bool isUserLoad) {
       if (isUserLoad) {
@@ -35,9 +41,10 @@ class _LoginPageVerificationState extends State<LoginPageVerification> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const MainPage()),
+          // MaterialPageRoute(builder: (context) => TempTestFile(verifCode: _verificationCode.text)),
         );
       } else {
-        _showSnackBar(
+        showSnackBar(
             context, 'This user unauthorized! Check your Verification code');
         setState(() => isLoading = false);
       }
@@ -49,11 +56,10 @@ class _LoginPageVerificationState extends State<LoginPageVerification> {
 
       if (_verificationCode.text.length != 32) {
         setState(() => isLoading = false);
-        _showSnackBar(context, 'Check your Verification code');
+        showSnackBar(context, 'Check your Verification code');
         return;
       }
-      bool isLoadUser = await YoutubeRepository()
-          .checkPersonAuthTokenKey(_verificationCode.text);
+      bool isLoadUser = await YoutubeRepository().checkPersonAuthTokenKey(_verificationCode.text);
 
       validationAuthToken(isLoadUser);
     }
@@ -76,15 +82,15 @@ class _LoginPageVerificationState extends State<LoginPageVerification> {
                 ? null
                 : Icon(
                     Icons.person,
-                    color: clrTheme.primary,
+                    color: colorTheme.primary,
                   ),
             label: isLoading
                 ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(clrTheme.primary),
+                    valueColor: AlwaysStoppedAnimation<Color>(colorTheme.primary),
                   )
                 : const Text('Log In'),
             style: FilledButton.styleFrom(
-              backgroundColor: clrTheme.onPrimary,
+              backgroundColor: colorTheme.onPrimary,
               foregroundColor: Colors.white,
             ),
           ),
@@ -94,17 +100,4 @@ class _LoginPageVerificationState extends State<LoginPageVerification> {
   }
 }
 
-void _showSnackBar(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      action: SnackBarAction(
-        label: 'ok',
-        onPressed: () {
-          debugPrint('Vladus is the best');
-          // Code to execute.
-        },
-      ),
-    ),
-  );
-}
+
