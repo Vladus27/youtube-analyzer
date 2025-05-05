@@ -11,8 +11,10 @@ class AddingChannelModalScreen extends StatefulWidget {
   const AddingChannelModalScreen({
     super.key,
     required this.onAddingChannel,
+    required this.channelsList
   });
   final void Function(SubscriptionChannel channel) onAddingChannel;
+  final List<SubscriptionChannel>channelsList;
 
   @override
   State<AddingChannelModalScreen> createState() =>
@@ -25,13 +27,13 @@ class _AddingChannelModalScreenState extends State<AddingChannelModalScreen> {
 
   bool isLoading = false;
 
-  void _setDialogAlert() {
+  void _setDialogAlert(String message) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text("Invalid input"),
         content:
-            const Text("Please make sure a valid channel username was entered"),
+            Text(message),
         actions: [
           TextButton(
             onPressed: () {
@@ -52,9 +54,17 @@ class _AddingChannelModalScreenState extends State<AddingChannelModalScreen> {
     debugPrint('submit new channel has work. The username: $username');
 
     if (username.isEmpty) {
-      _setDialogAlert();
+      _setDialogAlert('The field is empty. Please enter a username');
       return;
     }
+    bool isExist = widget.channelsList.any((channel)=>channel.username == username);
+    if(isExist){
+      _setDialogAlert('You are already subscribed to this channel');
+      return;
+
+    }
+
+
     if (_formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
@@ -72,7 +82,7 @@ class _AddingChannelModalScreenState extends State<AddingChannelModalScreen> {
           showSnackBar(context, 'Channel has been successfully added');
         }
       } else {
-        _setDialogAlert();
+        _setDialogAlert('invalid input');
       }
     }
   }

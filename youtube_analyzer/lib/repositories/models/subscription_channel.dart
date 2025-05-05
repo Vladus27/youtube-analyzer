@@ -5,12 +5,14 @@ class SubscriptionChannel {
   SubscriptionChannel({
     required this.channelID,
     required this.channelTitle,
+    required this.username,
     required this.aiPrompt,
     required this.promptProperties,
     required this.channelImageUrl,
   });
   final String channelID;
   final String channelTitle;
+  final String username;
   final String? aiPrompt;
   final List promptProperties;
   final String channelImageUrl;
@@ -19,6 +21,7 @@ class SubscriptionChannel {
     return SubscriptionChannel(
       channelID: json['id'],
       channelTitle: json['title'],
+      username: json['username'],
       aiPrompt: json['aiPrompt'],
       promptProperties: ['promptProperties'],
       channelImageUrl: json['imageUrl'],

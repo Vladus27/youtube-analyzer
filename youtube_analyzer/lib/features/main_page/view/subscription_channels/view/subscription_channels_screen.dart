@@ -42,6 +42,7 @@ class _SubscriptionsChannelsScreenState
   }
 
   void _addChannel(SubscriptionChannel youtuber) {
+    
     setState(
       () {
         subscrtiptionYT.add(youtuber);
@@ -77,6 +78,7 @@ class _SubscriptionsChannelsScreenState
                 ),
                 child: AddingChannelModalScreen(
                   onAddingChannel: _addChannel,
+                  channelsList: subscrtiptionYT ,
                 ),
               ),
             ),
