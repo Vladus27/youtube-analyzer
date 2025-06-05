@@ -9,6 +9,7 @@ class Database {
 
   static const String personAuthTokenKey = "personAuthToken";
 
+  static const int timerSeconds = 1200;
   /*KEYS*/
 
   static late Box<dynamic> box;

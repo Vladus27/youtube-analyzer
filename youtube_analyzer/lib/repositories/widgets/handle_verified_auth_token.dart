@@ -14,7 +14,7 @@ Future<void> handleVerifiedAuthTokenAsync(
   if (!ctx.mounted) return; 
 
   if (!isVerifiedToken) {
-    // Database.set(Database.personAuthTokenKey, null);
+    Database.set(Database.personAuthTokenKey, 'empty');
     showDialog(
       context: ctx,
       barrierDismissible: false,

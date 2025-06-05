@@ -33,22 +33,25 @@ class VideoContent {
   VideoContent({
     required this.videoId,
     required this.videoTitle,
-    required this.recognitionState,
     required this.externalId,
+    required this.recognitionState,
+    required this.videoType,
     this.color = Colors.amber,
   });
   final String videoId;
   final String videoTitle;
-  final int recognitionState;
   final String externalId;
+  final int recognitionState;
+  final int videoType;
   final Color color;
 
   factory VideoContent.fromJsonPreview(Map<String, dynamic> json) {
     return VideoContent(
         videoId: json['id'],
         videoTitle: json['title'],
-        externalId: json['externalId'],
-        recognitionState: json['recognitionState']);
+        externalId: json['externalId'],        
+        recognitionState: json['recognitionState'],
+        videoType: json['videoType']);        
   }
 }
 

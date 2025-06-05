@@ -3,32 +3,25 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/common/database.dart';
 
-import 'package:youtube_analyzer/features/main_page/view/content_channel/view/content_channel_grid_view_screen.dart';
-import 'package:youtube_analyzer/features/main_page/view/subscription_channels/view/subscription_channels_screen.dart';
-import 'package:youtube_analyzer/features/main_page/view/wallet/view/second_payment_screen.dart';
-import 'package:youtube_analyzer/features/main_page/view/wallet/view/purchase_screen.dart';
-import 'package:youtube_analyzer/features/main_page/view/wallet/widgets/wallet_history_list.dart';
-
-import 'package:youtube_analyzer/repositories/models/subscription_channel.dart'; //model
 import 'package:youtube_analyzer/repositories/models/wallet.dart';
 import 'package:youtube_analyzer/repositories/payment_repository.dart';
-import 'package:youtube_analyzer/repositories/widgets/handle_verified_auth_token.dart';
-import 'package:youtube_analyzer/repositories/youtube_repository.dart';
+import 'package:youtube_analyzer/features/main_page/view/wallet/view/second_payment_screen.dart';
+import 'package:youtube_analyzer/features/main_page/view/wallet/view/purchase_screen.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+import 'package:youtube_analyzer/w_dummy_test/dummy_test_data.dart';
+import 'package:youtube_analyzer/features/main_page/view/wallet/widgets/wallet_history_list.dart';
+
+class TempTestFile extends StatefulWidget {
+  const TempTestFile({
+    super.key,
+  });
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<TempTestFile> createState() => _TempTestFileState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _TempTestFileState extends State<TempTestFile> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<VideoContent> selectedContent = [];
-  bool isLoading = false;
-  String idChannel = '';
-  String contentAuthor = '';
-
   List<OrderHistory> _historyOrders = [];
   // List<OrderHistory> _historyOrders = DummyTestData.getHistoryOrders();
   List<PaymentCurrency> _avaliableCurrency = [];
@@ -45,26 +38,9 @@ class _MainPageState extends State<MainPage> {
 
   Timer? _timerPaymentStatus;
 
-  void _disableButtonPurchase() {
-    if (_remainingSeconds > 1080 || _isLoadingPurchase == false) {
-      setState(() {
-        _isLoadingPurchase = true;
-      });
-    } else {
-      setState(() {
-        _isLoadingPurchase = false;
-      });
-    }
-  }
-
   Future<void> _getPaymentStatus() async {
     final PaymentStatus? payment = await PaymentRepository().getPaymentStatus();
-    if (payment == null) {
-      // _timerPayment?.cancel();
-      _isLoadingHistory = true;
-      _updateHistoryOrders();
-      return;
-    } else {
+    if (payment != null) {
       final paymnetUpdatedAt = payment.secondsUntilCancel;
       Database.set(Database.timerSeconds, paymnetUpdatedAt);
       final paymentStatus = payment.status;
@@ -79,7 +55,10 @@ class _MainPageState extends State<MainPage> {
       bool statusTracker = statusWaiting || statusInProgress;
       debugPrint('_isTimerPaymentStarted: $_isTimerPaymentStarted');
       if (statusTracker) {
-        _getStarterTimer();
+        if (!_isTimerPaymentStarted) {
+          debugPrint('Start timer from _getPaymentStatus');
+          _startTimerPayment();
+        }
         _isLoadingHistory = true;
         _updateHistoryOrders();
       } else {
@@ -89,19 +68,21 @@ class _MainPageState extends State<MainPage> {
           _isTimerPaymentStarted = false;
         });
         _updateHistoryOrders();
-        if (statusResult) {
-          _timerPayment?.cancel();
+        if(statusResult){
           _getBallance();
-          _isLoadingHistory = true;
-        _updateHistoryOrders();
         }
+
+
       }
+    } else {
+      _timerPayment?.cancel();
+      _isLoadingHistory = true;
+      _updateHistoryOrders();
     }
   }
 
   void _startTimerPayment() {
     setState(() {
-      // debugPrint('')
       _isTimerPaymentStarted = true;
       _isLoadingPurchase = true;
     });
@@ -115,7 +96,6 @@ class _MainPageState extends State<MainPage> {
         }
 
         debugPrint('seconds left in testTempFile: $_remainingSeconds');
-        debugPrint(' _isLoadingPurchase = $_isLoadingPurchase');
         if (_remainingSeconds < 1080 && _isLoadingPurchase == true) {
           //if two minutes passed
           setState(() {
@@ -135,7 +115,6 @@ class _MainPageState extends State<MainPage> {
 
   void _getStarterTimer() {
     if (!_isTimerPaymentStarted) {
-      debugPrint('call startTimerPayment');
       _startTimerPayment();
     }
   }
@@ -181,8 +160,7 @@ class _MainPageState extends State<MainPage> {
 
   void _openPurchaseScreen() async {
     _closeEndDrawer();
-
-    Payment? isPurchased = await Navigator.push(
+    bool isPurchased = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => PurchaseScreen(
@@ -190,11 +168,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
-
-    if (isPurchased != null) {
-      setState(() {
-        _isLoadingPurchase = true;
-      });      
+    if (isPurchased) {
       _remainingSeconds = Database.get(Database.timerSeconds);
       _getStarterTimer();
       // _isLoadingHistory = isPurchased;
@@ -209,7 +183,7 @@ class _MainPageState extends State<MainPage> {
     debugPrint('sdksdlfdslf');
     if (_remainingSeconds > 2) {
       if (mounted) {
-        Payment? isPurchased = await Navigator.push(
+        bool isPurchased = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => SecondPaymentScreen(
@@ -226,9 +200,8 @@ class _MainPageState extends State<MainPage> {
         //   _startTimerPayment();
         // }
       }
-    } else {
-      _isLoadingPurchase = false;
-      // _getPaymentStatus();
+    }
+    else{
       _isLoadingHistory = true;
       _updateHistoryOrders();
     }
@@ -270,39 +243,15 @@ class _MainPageState extends State<MainPage> {
       debugPrint('Balance load error: $e');
       setState(() {
         _walletBalance = '--/--';
+        
       });
     }
   }
 
-  void _selectedContent(String selectedYoutuber, [String channelName = '']) {
-    setState(() {
-      selectedContent = [];
-      isLoading = true;
-    });
-    _loadVideos(selectedYoutuber, channelName);
-  }
-
-  Future<void> _loadVideos(String channelId, String channelName) async {
-    await handleVerifiedAuthTokenAsync(ctx: context);
-    List<VideoContent> videos =
-        await YoutubeRepository().getChannelVideos(channelId);
-    setState(() {
-      idChannel = channelId;
-      selectedContent = videos;
-      isLoading = false;
-      contentAuthor = channelName;
-    });
-  }
-
-  void _handleVerifCode() async {
-    await handleVerifiedAuthTokenAsync(ctx: context);
-  }
-
   @override
   void initState() {
-    _handleVerifCode();
+    // _getStarterTimer();
     _getBallance();
-    _disableButtonPurchase();
     _getHistoryOrders();
     _getCurrenciesList();
     _getPaymentStatus();
@@ -312,7 +261,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).colorScheme;
-    debugPrint('user auth token: ${Database.get(Database.personAuthTokenKey)}');
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(
@@ -363,7 +311,7 @@ class _MainPageState extends State<MainPage> {
                           _openSecondaryPurchaseScreen)),
               ElevatedButton.icon(
                 onPressed: () {
-                  _closeEndDrawer();
+                  _closeEndDrawer();                 
                 },
                 icon: const Icon(Icons.close),
                 label: const Text('Close Wallet'),
@@ -373,7 +321,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       appBar: AppBar(
-        title: const Text('Analyzer'),
+        title: const Text('Temp Test File'),
         actions: [
           SizedBox(
             width: 50,
@@ -393,23 +341,25 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      body: Row(
-        children: [
-          Expanded(
-              flex: 2,
-              child: SubscriptionsChannelsScreen(
-                onSelectedChannelsContent: _selectedContent,
-              )),
-          Expanded(
-            flex: 9,
-            child: ContentChannelGridViewScreen(
-              youtubersContent: selectedContent,
-              channelId: idChannel,
-              isLoading: isLoading,
-              contentAuthor: contentAuthor,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('This is a temporary test file.'),
+            ElevatedButton(
+              onPressed: () {
+                _openEndDrawer();
+                // Add your action here
+              },
+              child: const Text('Click Me'),
             ),
-          ),
-        ],
+            Container(
+              height: 100,
+              width: 100,
+              color: colorTheme.onSecondary,
+            )
+          ],
+        ),
       ),
     );
   }
