@@ -34,26 +34,59 @@ class ContentChannelGridViewScreen extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .displayLarge!
-                        .copyWith(color: colorTheme.primary),                    
+                        .copyWith(color: colorTheme.primary),
                   ),
           )
-        : GridView(
-            padding: const EdgeInsets.all(24),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4, //set amount of colums (horisontals) in table
-                childAspectRatio: 3 / 2, //aspect ratio of elements
-                crossAxisSpacing:
-                    20, //spacing between the colums?? (horisontals)
-                mainAxisSpacing: 15 //spacing between the rows (verticals)
+        : DefaultTabController(
+            length: 2,
+            child: Scaffold(
+
+              floatingActionButton: FloatingActionButton(
+                heroTag: 'scenarionFab',
+                onPressed: () {},
+                child: const Icon(Icons.add),
+              ),
+              appBar: AppBar(
+                title: const TabBar(
+                  tabs: [
+                    Tab(
+                      text: 'videos',
+                      icon: Icon(Icons.ondemand_video_rounded),
+                    ),
+                    Tab(
+                      text: 'scenarios',
+                      icon: Icon(Icons.video_settings_outlined),
+                    ),
+                  ],
                 ),
-            children: youtubersContent
-                .map((content) => ChannelGridViewVideo(
-                      content: content,
-                      channelId: channelId,
-                      channelExternalId: content.externalId,
-                      author: contentAuthor,
-                    ))
-                .toList(),
+              ),
+              body: TabBarView(
+                children: [
+                  GridView(
+                    padding: const EdgeInsets.all(24),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount:
+                                4, //set amount of colums (horisontals) in table
+                            childAspectRatio: 3 / 2, //aspect ratio of elements
+                            crossAxisSpacing:
+                                20, //spacing between the colums?? (horisontals)
+                            mainAxisSpacing:
+                                15 //spacing between the rows (verticals)
+                            ),
+                    children: youtubersContent
+                        .map((content) => ChannelGridViewVideo(
+                              content: content,
+                              channelId: channelId,
+                              channelExternalId: content.externalId,
+                              author: contentAuthor,
+                            ))
+                        .toList(),
+                  ),
+                  const Center(child: Text('secocnd tab')),
+                ],
+              ),
+            ),
           );
   }
 }

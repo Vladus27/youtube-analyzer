@@ -1,5 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+
+
 
 class LoginPageHyperText extends StatelessWidget {
   const LoginPageHyperText({
@@ -12,6 +16,12 @@ class LoginPageHyperText extends StatelessWidget {
   final String hyperText;
   final String endText;
 
+
+void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -21,7 +31,7 @@ class LoginPageHyperText extends StatelessWidget {
       try {
         await launchUrl(botUrl, mode: LaunchMode.platformDefault);
       } catch (e) {
-        debugPrint('Could not launch $botUrl: $e');
+        _printTextInDebugMode('Could not launch $botUrl: $e');
       }
     }
 

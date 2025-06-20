@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:youtube_analyzer/features/main_page/view/subscription_channels/adding_channel/view/adding_channel_modal_screen.dart';
@@ -7,6 +8,8 @@ import 'package:youtube_analyzer/repositories/widgets/show_snack_bar.dart';
 import 'package:youtube_analyzer/repositories/models/subscription_channel.dart';
 import 'package:youtube_analyzer/repositories/widgets/handle_verified_auth_token.dart';
 import 'package:youtube_analyzer/repositories/youtube_repository.dart';
+
+
 
 
 class SubscriptionsChannelsScreen extends StatefulWidget {
@@ -23,6 +26,12 @@ class _SubscriptionsChannelsScreenState
     extends State<SubscriptionsChannelsScreen> {
   List<SubscriptionChannel> subscrtiptionYT = [];
 
+  void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
+
   void _deleteChannel(String channelId) async {
     await handleVerifiedAuthTokenAsync(ctx: context);
     final bool isDeleted = await YoutubeRepository().deleteChannel(channelId);
@@ -34,10 +43,10 @@ class _SubscriptionsChannelsScreenState
       if(mounted){
       showSnackBar(context, 'Channel has been successfully deleted');
       }
-      debugPrint("Youtuber is deleted Succsessfully");
+      _printTextInDebugMode("Youtuber is deleted Succsessfully");
       setState(() {});
     } else {
-      debugPrint("something went wrong");
+      _printTextInDebugMode("something went wrong");
     }
   }
 

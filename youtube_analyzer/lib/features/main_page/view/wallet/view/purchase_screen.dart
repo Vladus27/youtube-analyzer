@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/repositories/models/wallet.dart';
 import 'package:youtube_analyzer/repositories/payment_repository.dart';
 import 'package:youtube_analyzer/repositories/widgets/handle_verified_auth_token.dart';
-import 'package:youtube_analyzer/w_dummy_test/dummy_test_data.dart';
+
 import 'package:youtube_analyzer/features/main_page/view/wallet/view/payment_screen.dart';
 import 'package:youtube_analyzer/features/main_page/view/wallet/view/select_payment_screen.dart';
 
@@ -25,6 +26,7 @@ class PurchaseScreen extends StatefulWidget {
 }
 
 class _PurchaseScreenState extends State<PurchaseScreen> {
+  
   final _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -39,6 +41,13 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   bool _isTimerStarted = false;
   Payment? _paymentOrder;
   bool _isSetPaymentOrder = false;
+
+
+  void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -87,7 +96,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
       payCurrency,
       priceUsd,
     );
-    debugPrint('Payment from handlePurchase: $payment');
+    _printTextInDebugMode('Payment from handlePurchase: $payment');
 
     if (payment != null) {
       _paymentOrder = payment;
@@ -109,7 +118,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
           action: SnackBarAction(
             label: 'ok',
             onPressed: () {
-              debugPrint('Vladus is the best');
+              _printTextInDebugMode('Vladus is the best');
               // Code to execute.
             },
           ),

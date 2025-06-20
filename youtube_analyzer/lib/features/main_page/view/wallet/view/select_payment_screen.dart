@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,6 +33,13 @@ class SelectPaymentScreen extends StatefulWidget {
 }
 
 class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
+
+void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
+
   bool isLoading = false;
 
   @override
@@ -44,9 +52,9 @@ class _SelectPaymentScreenState extends State<SelectPaymentScreen> {
         isLoading = true;
       });
       if (widget.formKey.currentState?.validate() ?? false) {
-        debugPrint(
+        _printTextInDebugMode(
             'type of entred amount ${widget.minAmountController.text}: ${widget.minAmountController.text.runtimeType}');
-        debugPrint(
+        _printTextInDebugMode(
             'type of entered currency ${widget.avaliableCurrency[widget.value!].code}: ${widget.avaliableCurrency[widget.value!].code.runtimeType}');
         await widget.handlePurchase(
             isLoading: isLoading,

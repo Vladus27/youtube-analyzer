@@ -1,10 +1,15 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/repositories/models/wallet.dart';
 import 'package:youtube_analyzer/features/main_page/view/wallet/view/payment_screen.dart';
+
+
+
+
 
 class SecondPaymentScreen extends StatefulWidget {
   const SecondPaymentScreen({
@@ -24,6 +29,12 @@ class _SecondPaymentScreenState extends State<SecondPaymentScreen> {
 
   late int _remainingSeconds;
 
+
+void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
   void _startTimer() {
     setState(() => _isTimerStarted = true);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -31,7 +42,7 @@ class _SecondPaymentScreenState extends State<SecondPaymentScreen> {
         setState(() {
           _remainingSeconds--;
           Database.set(Database.timerSeconds, _remainingSeconds);
-          debugPrint('second left in SecondPaymentScreen $_remainingSeconds');
+          _printTextInDebugMode('second left in SecondPaymentScreen $_remainingSeconds');
         });
       } else {
         timer.cancel();
@@ -94,7 +105,7 @@ class _SecondPaymentScreenState extends State<SecondPaymentScreen> {
           action: SnackBarAction(
             label: 'ok',
             onPressed: () {
-              debugPrint('Vladus is the best');
+              _printTextInDebugMode('Vladus is the best');
               // Code to execute.
             },
           ),

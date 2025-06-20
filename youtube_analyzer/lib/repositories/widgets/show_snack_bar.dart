@@ -1,5 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+
+void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
 
 void showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).clearSnackBars();
@@ -9,7 +16,7 @@ void showSnackBar(BuildContext context, String message) {
       action: SnackBarAction(
         label: 'ok',
         onPressed: () {
-          debugPrint('Vladus is the best');
+          _printTextInDebugMode('Vladus is the best');
           // Code to execute.
         },
       ),

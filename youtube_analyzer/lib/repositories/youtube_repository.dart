@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 //import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +12,11 @@ import 'package:youtube_analyzer/repositories/models/subscription_channel.dart';
 
 class YoutubeRepository {
 
+void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
   final String _basicUrl = Environment.apiUrl;
 
   Future<bool> checkPersonAuthTokenKey(String verifCode) async {
@@ -26,18 +32,18 @@ class YoutubeRepository {
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        debugPrint('my response: $responseData');
+        _printTextInDebugMode('my response: $responseData');
 
         isAuthorized = responseData['isOk'] == true;
-        debugPrint('authentication is: $isAuthorized');
+        _printTextInDebugMode('authentication is: $isAuthorized');
       } else if (response.statusCode == 401) {
-        debugPrint(
+        _printTextInDebugMode(
             " checkPersonAuth User in unathorized, statusCode: ${response.statusCode}");
 
         return isAuthorized;
       }
     } catch (e) {
-      debugPrint(' Виникла помилка: $e');
+      _printTextInDebugMode(' Виникла помилка: $e');
     }
     return isAuthorized;
   }
@@ -54,10 +60,10 @@ class YoutubeRepository {
       },
     );
     if (response.statusCode == 401) {
-      debugPrint('this piece of code is excecute');
+      _printTextInDebugMode('this piece of code is excecute');
     }
     
-    debugPrint('Status code when adding Youtuber: ${response.statusCode}');
+    _printTextInDebugMode('Status code when adding Youtuber: ${response.statusCode}');
     final data = json.decode(response.body);
 
     if (data['isOk']) {
@@ -85,12 +91,12 @@ class YoutubeRepository {
           'x-token': token,
         },
       );
-      debugPrint(response.body);
+      _printTextInDebugMode(response.body);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (!data['isOk']) {
-          debugPrint(' Помилка API: ${data['errors']}');
+          _printTextInDebugMode(' Помилка API: ${data['errors']}');
           return subscrtiptionYT;
         }
 
@@ -101,10 +107,10 @@ class YoutubeRepository {
             .map<SubscriptionChannel>((e) => SubscriptionChannel.fromJson(e))
             .toList();
       } else {
-        debugPrint(' Помилка HTTP: ${response.statusCode}');
+        _printTextInDebugMode(' Помилка HTTP: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint(' Виникла помилка: $e');
+      _printTextInDebugMode(' Виникла помилка: $e');
     }
     return subscrtiptionYT;
   }
@@ -121,12 +127,12 @@ class YoutubeRepository {
     );
 
     final data = json.decode(response.body);
-    debugPrint('апішка працює корректно!');
+    _printTextInDebugMode('апішка працює корректно!');
     if (response.statusCode != 200) {
-      debugPrint('Failed to load videos');
+      _printTextInDebugMode('Failed to load videos');
       return videos;
     }
-    debugPrint('апішка працює корректно!');
+    _printTextInDebugMode('апішка працює корректно!');
     final dataValue = data['value'];
     final dataItems = dataValue['items'];
     videos = (dataItems as List)
@@ -175,15 +181,15 @@ class YoutubeRepository {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         if (responseData['isOk']) {
-          debugPrint('✅ Промпт успішно встановлено!');
+          _printTextInDebugMode('✅ Промпт успішно встановлено!');
         } else {
-          debugPrint('⚠️ Помилка: ${responseData['errors']}');
+          _printTextInDebugMode('⚠️ Помилка: ${responseData['errors']}');
         }
       } else {
-        debugPrint('❌ Запит завершився з помилкою: ${response.statusCode}');
+        _printTextInDebugMode('❌ Запит завершився з помилкою: ${response.statusCode}');
       }
     } catch (error) {
-      debugPrint('❗ Виникла помилка: $error');
+      _printTextInDebugMode('❗ Виникла помилка: $error');
     }
   }
 
@@ -206,7 +212,7 @@ class YoutubeRepository {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
-        debugPrint('🔍 Debug API Response: ${responseData.toString()}');
+        _printTextInDebugMode('🔍 Debug API Response: ${responseData.toString()}');
 
         if (responseData['isOk']) {
           final videoDetails = responseData['value'];
@@ -217,21 +223,21 @@ class YoutubeRepository {
         І ВІДПОВІДНО ПРИСВОЮВАТИ ЇМ ЗНАЧЕННЯ ОРИГІНАЛЬНОГО ТА МОДИФІКОВАНОГО ТЕКСТУ, ЩОБ НЕ СТВОРЮВАТИЄ
         ДОДАТКОВУ ЛИШНЮ МОДЕЛЬ!
 */
-          debugPrint('✅ Деталі відео:');
-          debugPrint('ID: ${videoDetails['id']}');
-          debugPrint('Title: ${videoDetails['title']}');
-          debugPrint('Original Text: ${videoDetails['originalText']}');
-          debugPrint('Modified Text: ${videoDetails['modifiedText']}');
+          _printTextInDebugMode('✅ Деталі відео:');
+          _printTextInDebugMode('ID: ${videoDetails['id']}');
+          _printTextInDebugMode('Title: ${videoDetails['title']}');
+          _printTextInDebugMode('Original Text: ${videoDetails['originalText']}');
+          _printTextInDebugMode('Modified Text: ${videoDetails['modifiedText']}');
 
           // Можемо передати деталі у діалогове вікно
         } else {
-          debugPrint('⚠️ Помилка: ${responseData['errors']}');
+          _printTextInDebugMode('⚠️ Помилка: ${responseData['errors']}');
         }
       } else {
-        debugPrint('❌ Запит завершився з помилкою: ${response.statusCode}');
+        _printTextInDebugMode('❌ Запит завершився з помилкою: ${response.statusCode}');
       }
     } catch (error) {
-      debugPrint('❗ Виникла помилка: $error');
+      _printTextInDebugMode('❗ Виникла помилка: $error');
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/features/main_page/widgets/form_buttons.dart';
 import 'package:youtube_analyzer/features/main_page/view/subscription_channels/adding_channel/widgets/adding_channel_text_form_field.dart';
@@ -6,6 +7,8 @@ import 'package:youtube_analyzer/repositories/widgets/show_snack_bar.dart';
 import 'package:youtube_analyzer/repositories/models/subscription_channel.dart';
 import 'package:youtube_analyzer/repositories/widgets/handle_verified_auth_token.dart';
 import 'package:youtube_analyzer/repositories/youtube_repository.dart';
+
+
 
 class AddingChannelModalScreen extends StatefulWidget {
   const AddingChannelModalScreen({
@@ -26,6 +29,12 @@ class _AddingChannelModalScreenState extends State<AddingChannelModalScreen> {
   final _usernameChannelController = TextEditingController();
 
   bool isLoading = false;
+
+  void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
 
   void _setDialogAlert(String message) {
     showDialog(
@@ -51,7 +60,7 @@ class _AddingChannelModalScreenState extends State<AddingChannelModalScreen> {
 
   void _submitNewChannel() async {
     String username = _usernameChannelController.text.trim();
-    debugPrint('submit new channel has work. The username: $username');
+    _printTextInDebugMode('submit new channel has work. The username: $username');
 
     if (username.isEmpty) {
       _setDialogAlert('The field is empty. Please enter a username');

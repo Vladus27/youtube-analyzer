@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/common/database.dart';
 
@@ -57,6 +58,13 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+
+  void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
+
   Future<void> _getPaymentStatus() async {
     final PaymentStatus? payment = await PaymentRepository().getPaymentStatus();
     if (payment == null) {
@@ -68,16 +76,16 @@ class _MainPageState extends State<MainPage> {
       final paymnetUpdatedAt = payment.secondsUntilCancel;
       Database.set(Database.timerSeconds, paymnetUpdatedAt);
       final paymentStatus = payment.status;
-      debugPrint('Payment seconds until cancel: $paymnetUpdatedAt');
+      _printTextInDebugMode('Payment seconds until cancel: $paymnetUpdatedAt');
       _remainingSeconds = paymnetUpdatedAt;
-      debugPrint('check last payment status: $paymentStatus');
+      _printTextInDebugMode('check last payment status: $paymentStatus');
 
       bool statusWaiting = paymentStatus == 'Waiting' || paymentStatus == 'New';
       bool statusInProgress = paymentStatus == 'InProgress';
       bool statusResult = paymentStatus == 'Done';
 
       bool statusTracker = statusWaiting || statusInProgress;
-      debugPrint('_isTimerPaymentStarted: $_isTimerPaymentStarted');
+      _printTextInDebugMode('_isTimerPaymentStarted: $_isTimerPaymentStarted');
       if (statusTracker) {
         _getStarterTimer();
         _isLoadingHistory = true;
@@ -93,7 +101,7 @@ class _MainPageState extends State<MainPage> {
           _timerPayment?.cancel();
           _getBallance();
           _isLoadingHistory = true;
-        _updateHistoryOrders();
+          _updateHistoryOrders();
         }
       }
     }
@@ -101,7 +109,7 @@ class _MainPageState extends State<MainPage> {
 
   void _startTimerPayment() {
     setState(() {
-      // debugPrint('')
+      // _printTextInDebugMode('')
       _isTimerPaymentStarted = true;
       _isLoadingPurchase = true;
     });
@@ -114,8 +122,8 @@ class _MainPageState extends State<MainPage> {
           _getPaymentStatus();
         }
 
-        debugPrint('seconds left in testTempFile: $_remainingSeconds');
-        debugPrint(' _isLoadingPurchase = $_isLoadingPurchase');
+        _printTextInDebugMode('seconds left in testTempFile: $_remainingSeconds');
+        _printTextInDebugMode(' _isLoadingPurchase = $_isLoadingPurchase');
         if (_remainingSeconds < 1080 && _isLoadingPurchase == true) {
           //if two minutes passed
           setState(() {
@@ -135,15 +143,15 @@ class _MainPageState extends State<MainPage> {
 
   void _getStarterTimer() {
     if (!_isTimerPaymentStarted) {
-      debugPrint('call startTimerPayment');
+      _printTextInDebugMode('call startTimerPayment');
       _startTimerPayment();
     }
   }
 
   void _updateHistoryOrders() {
-    debugPrint('update history orders was called');
+    _printTextInDebugMode('update history orders was called');
     if (_isLoadingHistory) {
-      debugPrint('get history was called');
+      _printTextInDebugMode('get history was called');
       _getHistoryOrders();
     }
   }
@@ -175,7 +183,7 @@ class _MainPageState extends State<MainPage> {
         _isLoadingPurchase = false;
       });
     } catch (e) {
-      debugPrint('Currency load error: $e');
+      _printTextInDebugMode('Currency load error: $e');
     }
   }
 
@@ -194,7 +202,7 @@ class _MainPageState extends State<MainPage> {
     if (isPurchased != null) {
       setState(() {
         _isLoadingPurchase = true;
-      });      
+      });
       _remainingSeconds = Database.get(Database.timerSeconds);
       _getStarterTimer();
       // _isLoadingHistory = isPurchased;
@@ -206,7 +214,7 @@ class _MainPageState extends State<MainPage> {
     _closeEndDrawer();
 
     PaymentStatus payment = await PaymentRepository().getPaymentStatus();
-    debugPrint('sdksdlfdslf');
+    _printTextInDebugMode('sdksdlfdslf');
     if (_remainingSeconds > 2) {
       if (mounted) {
         Payment? isPurchased = await Navigator.push(
@@ -218,7 +226,7 @@ class _MainPageState extends State<MainPage> {
           ),
         );
 
-        debugPrint(
+        _printTextInDebugMode(
             ' check isPurchased after close SecondPaymentScreen: $isPurchased');
         _getStarterTimer();
         // if (!_isTimerPaymentStarted) {
@@ -250,7 +258,7 @@ class _MainPageState extends State<MainPage> {
         _isLoadingHistory = false;
       });
     } catch (e) {
-      debugPrint('History load error: $e');
+      _printTextInDebugMode('History load error: $e');
       setState(() {
         _isLoadingHistory = false;
       });
@@ -267,7 +275,7 @@ class _MainPageState extends State<MainPage> {
       });
     } catch (e) {
       // опціонально: обробка помилки
-      debugPrint('Balance load error: $e');
+      _printTextInDebugMode('Balance load error: $e');
       setState(() {
         _walletBalance = '--/--';
       });
@@ -312,7 +320,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).colorScheme;
-    debugPrint('user auth token: ${Database.get(Database.personAuthTokenKey)}');
+    _printTextInDebugMode('user auth token: ${Database.get(Database.personAuthTokenKey)}');
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(
@@ -325,13 +333,14 @@ class _MainPageState extends State<MainPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text('Wallet',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
               const Text('Balance:'),
               Text(
                 '\$ $_walletBalance ',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -391,7 +400,7 @@ class _MainPageState extends State<MainPage> {
               icon: const Icon(Icons.person),
             ),
           ),
-        ],
+        ],        
       ),
       body: Row(
         children: [

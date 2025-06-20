@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,18 @@ import 'package:youtube_analyzer/repositories/models/environment.dart';
 import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/repositories/models/wallet.dart';
 
+
+
+
+
+
 class PaymentRepository {
+void _printTextInDebugMode(String text){
+  if (!kReleaseMode) {
+    debugPrint(text);
+  }  
+}
+
   final String _basicUrl = Environment.apiUrl;
   final Map<String, String> _localLogos = {
     'DAI': CurrencyImages.dai,
@@ -38,7 +50,7 @@ class PaymentRepository {
       }).toList();
       return historyOrders;
     } else {
-      debugPrint('Failed to fetch orders history');
+      _printTextInDebugMode('Failed to fetch orders history');
       return historyOrders;
     }
   }
@@ -57,7 +69,7 @@ class PaymentRepository {
     final data = json.decode(response.body);
 
     final dataBalance = data['value']['balance'] as double;
-    debugPrint('Wallet balance: $dataBalance');
+    _printTextInDebugMode('Wallet balance: $dataBalance');
     return dataBalance;
   }
 
@@ -95,7 +107,7 @@ class PaymentRepository {
             : payment;
       }
     } catch (e) {
-      debugPrint('post payment error: $e');
+      _printTextInDebugMode('post payment error: $e');
       return null;
     }
     return null;
@@ -115,8 +127,8 @@ class PaymentRepository {
     );
 
     if (response.statusCode != 200) {
-      debugPrint('getPaymentStatus error: ${response.statusCode}');
-      debugPrint('getPaymentStatus body: ${response.body}'); // <-- тут буде причина
+      _printTextInDebugMode('getPaymentStatus error: ${response.statusCode}');
+      _printTextInDebugMode('getPaymentStatus body: ${response.body}'); // <-- тут буде причина
       return null;
     }
 
@@ -142,7 +154,7 @@ class PaymentRepository {
       //     networkColor: currency.networkColor,
       //   )
     }} catch(e){
-      debugPrint('get payment status error: $e');
+      _printTextInDebugMode('get payment status error: $e');
     }
   }
 
@@ -162,7 +174,7 @@ class PaymentRepository {
     );
     final data = json.decode(response.body);
     if (!data['isOk']) {
-      debugPrint('getting payment currency failed');
+      _printTextInDebugMode('getting payment currency failed');
       return paymentCurrencies;
     }
 
@@ -186,8 +198,8 @@ class PaymentRepository {
           //   )
           : currency;
     }).toList();
-    debugPrint('Payment currencies loaded: ${paymentCurrencies.length}');
-    debugPrint(
+    _printTextInDebugMode('Payment currencies loaded: ${paymentCurrencies.length}');
+    _printTextInDebugMode(
         'Payment currencies: ${paymentCurrencies.map((e) => e.name).join(', ')}');
 
     return paymentCurrencies;
