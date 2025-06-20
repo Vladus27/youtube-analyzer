@@ -9,13 +9,14 @@ import 'package:youtube_analyzer/repositories/models/subscription_channel.dart';
 import 'package:youtube_analyzer/repositories/widgets/handle_verified_auth_token.dart';
 import 'package:youtube_analyzer/repositories/youtube_repository.dart';
 
-
-
-
 class SubscriptionsChannelsScreen extends StatefulWidget {
-  const SubscriptionsChannelsScreen(
-      {super.key, required this.onSelectedChannelsContent});
-  final void Function(String channelId, [String channelName]) onSelectedChannelsContent;
+  const SubscriptionsChannelsScreen({
+    super.key,
+    required this.onSelectedChannelsContent,
+    required this.onChannelDeleted,
+  });
+  final void Function(String channelId, [String channelName])onSelectedChannelsContent;
+  final void Function(String channelId) onChannelDeleted;
 
   @override
   State<SubscriptionsChannelsScreen> createState() =>
@@ -26,11 +27,11 @@ class _SubscriptionsChannelsScreenState
     extends State<SubscriptionsChannelsScreen> {
   List<SubscriptionChannel> subscrtiptionYT = [];
 
-  void _printTextInDebugMode(String text){
-  if (!kReleaseMode) {
-    debugPrint(text);
-  }  
-}
+  void _printTextInDebugMode(String text) {
+    if (!kReleaseMode) {
+      debugPrint(text);
+    }
+  }
 
   void _deleteChannel(String channelId) async {
     await handleVerifiedAuthTokenAsync(ctx: context);
@@ -40,18 +41,18 @@ class _SubscriptionsChannelsScreenState
         subscrtiptionYT
             .removeWhere((channel) => channel.channelID == channelId);
       });
-      if(mounted){
-      showSnackBar(context, 'Channel has been successfully deleted');
+      if (mounted) {
+        showSnackBar(context, 'Channel has been successfully deleted');
       }
       _printTextInDebugMode("Youtuber is deleted Succsessfully");
       setState(() {});
+      widget.onChannelDeleted(channelId);
     } else {
       _printTextInDebugMode("something went wrong");
     }
   }
 
   void _addChannel(SubscriptionChannel youtuber) {
-    
     setState(
       () {
         subscrtiptionYT.add(youtuber);
@@ -87,7 +88,7 @@ class _SubscriptionsChannelsScreenState
                 ),
                 child: AddingChannelModalScreen(
                   onAddingChannel: _addChannel,
-                  channelsList: subscrtiptionYT ,
+                  channelsList: subscrtiptionYT,
                 ),
               ),
             ),

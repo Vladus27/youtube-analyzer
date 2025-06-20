@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_analyzer/common/database.dart';
 
-import 'package:youtube_analyzer/features/main_page/view/content_channel/view/content_channel_grid_view_screen.dart';
+import 'package:youtube_analyzer/features/main_page/view/content_channel/view/content_channel_screen.dart';
 import 'package:youtube_analyzer/features/main_page/view/subscription_channels/view/subscription_channels_screen.dart';
 import 'package:youtube_analyzer/features/main_page/view/wallet/view/second_payment_screen.dart';
 import 'package:youtube_analyzer/features/main_page/view/wallet/view/purchase_screen.dart';
@@ -58,12 +58,11 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-
-  void _printTextInDebugMode(String text){
-  if (!kReleaseMode) {
-    debugPrint(text);
-  }  
-}
+  void _printTextInDebugMode(String text) {
+    if (!kReleaseMode) {
+      debugPrint(text);
+    }
+  }
 
   Future<void> _getPaymentStatus() async {
     final PaymentStatus? payment = await PaymentRepository().getPaymentStatus();
@@ -122,7 +121,8 @@ class _MainPageState extends State<MainPage> {
           _getPaymentStatus();
         }
 
-        _printTextInDebugMode('seconds left in testTempFile: $_remainingSeconds');
+        _printTextInDebugMode(
+            'seconds left in testTempFile: $_remainingSeconds');
         _printTextInDebugMode(' _isLoadingPurchase = $_isLoadingPurchase');
         if (_remainingSeconds < 1080 && _isLoadingPurchase == true) {
           //if two minutes passed
@@ -289,6 +289,16 @@ class _MainPageState extends State<MainPage> {
     });
     _loadVideos(selectedYoutuber, channelName);
   }
+  void _handleChannelDeleted(String deletedChannelId) {
+  if (idChannel == deletedChannelId) {
+    setState(() {
+      idChannel = '';
+      selectedContent = [];
+      contentAuthor = '';
+    });
+  }
+}
+
 
   Future<void> _loadVideos(String channelId, String channelName) async {
     await handleVerifiedAuthTokenAsync(ctx: context);
@@ -320,7 +330,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).colorScheme;
-    _printTextInDebugMode('user auth token: ${Database.get(Database.personAuthTokenKey)}');
+    _printTextInDebugMode(
+        'user auth token: ${Database.get(Database.personAuthTokenKey)}');
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(
@@ -333,14 +344,13 @@ class _MainPageState extends State<MainPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text('Wallet',
-                  style:
-                      TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
               const Text('Balance:'),
               Text(
                 '\$ $_walletBalance ',
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -400,7 +410,7 @@ class _MainPageState extends State<MainPage> {
               icon: const Icon(Icons.person),
             ),
           ),
-        ],        
+        ],
       ),
       body: Row(
         children: [
@@ -408,11 +418,16 @@ class _MainPageState extends State<MainPage> {
               flex: 2,
               child: SubscriptionsChannelsScreen(
                 onSelectedChannelsContent: _selectedContent,
+                onChannelDeleted: _handleChannelDeleted,
               )),
           Expanded(
             flex: 9,
-            child: ContentChannelGridViewScreen(
+            child: ContentChannelScreen(
               youtubersContent: selectedContent,
+              emptyContent: 
+              idChannel.isEmpty?
+                  'Select channel to view content' :
+                  'This board is empty! No content found for $contentAuthor',              
               channelId: idChannel,
               isLoading: isLoading,
               contentAuthor: contentAuthor,
