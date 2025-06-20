@@ -2,9 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-
-
 class LoginPageHyperText extends StatelessWidget {
   const LoginPageHyperText({
     super.key,

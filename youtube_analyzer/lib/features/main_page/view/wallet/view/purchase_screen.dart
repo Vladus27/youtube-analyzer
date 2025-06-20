@@ -30,10 +30,6 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   final _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-
-
-
-
   List<PaymentCurrency> _avaliableCurrency = [];
 
   int? _value = 0;
