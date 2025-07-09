@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:youtube_analyzer/assets/currency_images.dart';

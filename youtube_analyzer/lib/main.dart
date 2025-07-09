@@ -7,8 +7,8 @@ import 'package:youtube_analyzer/youtube_analizer_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: Environment.fileName);
-  await Database.init();
+  // await dotenv.load(fileName: Environment.fileName);
+  // await Database.init();
   
   runApp(const YoutubeAnalizerApp());
 }
