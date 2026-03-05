@@ -13,6 +13,13 @@ migrate_working_dir/
 .env
 .env.production
 .env.development
+.metadata
+.android/
+.ios/
+.linux/
+.macos/
+.windows/
+
 
 # IntelliJ related
 *.iml
