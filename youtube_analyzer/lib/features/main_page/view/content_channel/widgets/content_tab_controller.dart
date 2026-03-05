@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:youtube_analyzer/features/main_page/view/content_channel/widgets/channel_grid_view_video.dart';
 import 'package:youtube_analyzer/features/main_page/view/content_channel/widgets/view_empty_content.dart';
+import 'package:youtube_analyzer/features/main_page/view/scenario_channel/view/add_screnarios_screen.dart';
 import 'package:youtube_analyzer/repositories/models/subscription_channel.dart';
 
 class ContentTabController extends StatelessWidget {
@@ -59,22 +61,33 @@ class ContentTabController extends StatelessWidget {
                                     15 //spacing between the rows (verticals)
                                 ),
                         children: youtubersContent
-                            .map((content) => ChannelGridViewVideo(
-                                  content: content,
-                                  channelId: channelId,
-                                  channelExternalId: content.externalId,
-                                  author: contentAuthor,
-                                ))
+                            .map(
+                              (content) => ChannelGridViewVideo(
+                                content: content,
+                                channelId: channelId,
+                                channelExternalId: content.externalId,
+                                author: contentAuthor,
+                              ),
+                            )
                             .toList(),
                       ),
 
             Scaffold(
               floatingActionButton: FloatingActionButton(
                 heroTag: 'scenarionFab',
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          const AddScrenariosScreen(),
+                    ),
+                  );
+                },
                 child: const Icon(Icons.add),
               ),
-              body: const  Center(child: Text('second tab'),)
+              body: const Center(
+                child: Text('second tab'),
+              ),
             )
 
             // const Center(child: Text('secocnd tab')),

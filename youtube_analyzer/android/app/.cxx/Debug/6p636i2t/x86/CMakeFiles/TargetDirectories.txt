@@ -1,0 +1,2 @@
+D:/MyUser/work/youtube analyzer/youtube_analyzer/android/app/.cxx/Debug/6p636i2t/x86/CMakeFiles/edit_cache.dir
+D:/MyUser/work/youtube analyzer/youtube_analyzer/android/app/.cxx/Debug/6p636i2t/x86/CMakeFiles/rebuild_cache.dir

@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:youtube_analyzer/assets/currency_images.dart';
 
+import 'package:youtube_analyzer/assets/currency_images.dart';
 import 'package:youtube_analyzer/repositories/models/environment.dart';
 import 'package:youtube_analyzer/common/database.dart';
 import 'package:youtube_analyzer/repositories/models/wallet.dart';

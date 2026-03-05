@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class ScenarioButtons extends StatelessWidget {
   const ScenarioButtons({
     super.key,
+    this.label = 'Create scenario',
     required this.isLoading,
     required this.onCreateScenario,
   });
+  final String label;
   final bool isLoading;
   final void Function() onCreateScenario;
 
@@ -41,7 +43,7 @@ class ScenarioButtons extends StatelessWidget {
                       valueColor:
                           AlwaysStoppedAnimation<Color>(colorTheme.primary),
                     )
-                  : const Text('Create scenario'),
+                  : Text(label),
               onPressed: isLoading ? null : onCreateScenario,
               style: FilledButton.styleFrom(
                 backgroundColor: colorTheme.onPrimary,

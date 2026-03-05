@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:youtube_analyzer/features/main_page/view/scenario_channel/view/property_channel_screen.dart';
 
 class PropertyListItem extends StatelessWidget {
   const PropertyListItem(
@@ -43,6 +43,11 @@ class PropertyListItem extends StatelessWidget {
               maxLines: 1,
             ),
           ),
+          // Icon(
+          //   Icons.cancel_outlined,
+          //   color: colorTheme.error,
+          //   size: 12,
+          // ),
           Icon(
             Icons.check_circle_outline,
             color: colorTheme.primary,
@@ -54,6 +59,17 @@ class PropertyListItem extends StatelessWidget {
 
     return ListTile(
       onTap: () {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext cxt) {
+            return PropertyChannelScreen(
+              title: '#${index + 1} ${propertiesList[index]}',              
+
+            );
+          },
+        );
+
         debugPrint('Tapped on item ${propertiesList[index]}');
       },
       contentPadding: const EdgeInsets.only(
@@ -106,7 +122,6 @@ class PropertyListItem extends StatelessWidget {
                     ],
                   ),
                 )
-      
               //screen > 700
               : SizedBox(
                   width: 210,

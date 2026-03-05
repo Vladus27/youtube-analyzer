@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
-class InputScenarioDescription extends StatelessWidget {
-  const InputScenarioDescription({
+class InputMultiLine extends StatelessWidget {
+  const InputMultiLine({
     super.key,
-    required this.descriptionTextControler,
+    required this.textControler,
+    this.hint = 'Enter description (optional)',
+    this.label = 'Description',
   });
-  final TextEditingController descriptionTextControler;
+  final TextEditingController textControler;
+  final String hint;
+  final String label;
 
   OutlineInputBorder _inputBorderOutline(Color color) {
     return OutlineInputBorder(
@@ -18,11 +22,11 @@ class InputScenarioDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorTheme = Theme.of(context).colorScheme;
     return TextFormField(
-      controller: descriptionTextControler,
+      controller: textControler,
       maxLines: 5,
       decoration: InputDecoration(
-        hintText: 'Enter description (optional)',
-        labelText: 'Description',
+        hintText: hint,
+        labelText: label,
         filled: true,
         fillColor: colorTheme.surfaceContainer,
         enabledBorder: _inputBorderOutline(colorTheme.primaryContainer),

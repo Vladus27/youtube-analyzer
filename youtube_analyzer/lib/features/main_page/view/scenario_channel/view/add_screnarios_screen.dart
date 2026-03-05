@@ -88,12 +88,12 @@ class _AddScrenariosScreenState
                 key: _formKey,
                 child: Column(
                   children: [
-                    InputScenarioTitle(
-                      titleTextControler: titleTextControler,
+                    InputSingleLine(
+                      textControler: titleTextControler,
                     ),
                     const SizedBox(height: 16),
-                    InputScenarioDescription(
-                      descriptionTextControler: descriptionTextControler,
+                    InputMultiLine(
+                      textControler: descriptionTextControler,
                     ),
                   ],
                 ),

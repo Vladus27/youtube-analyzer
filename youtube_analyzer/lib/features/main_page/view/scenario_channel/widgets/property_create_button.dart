@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PropertyCreateButton extends StatelessWidget {
-  const PropertyCreateButton({super.key});
+  const PropertyCreateButton({super.key, required this.showPropertyDialog});
+  final void Function() showPropertyDialog;
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +10,9 @@ class PropertyCreateButton extends StatelessWidget {
       padding: const EdgeInsets.all(12.0),
       child: FilledButton.icon(
         icon: const Icon(Icons.video_settings),
-        onPressed: () {},
+        onPressed: () {
+          showPropertyDialog();          
+        },
         label: const Text('Create new property'),
         style: FilledButton.styleFrom(
           shape: const RoundedRectangleBorder(

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
-class InputScenarioTitle extends StatelessWidget {
-  const InputScenarioTitle({super.key, required this.titleTextControler});
-  final TextEditingController titleTextControler;
+class InputSingleLine extends StatelessWidget {
+  const InputSingleLine(
+      {super.key,
+      required this.textControler,
+      this.title = 'Scenario title',
+      this.label = 'Title',});
+  final String title;
+  final String label;
+  final TextEditingController textControler;
 
   OutlineInputBorder _inputBorderOutline(Color color) {
     return OutlineInputBorder(
@@ -18,18 +24,18 @@ class InputScenarioTitle extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Title cannot be empty';
+          return '$title cannot be empty';
         }
         if (value.length < 3) {
-          return 'Title must be at least 3 characters long';
+          return '$title must be at least 3 characters long';
         }
         return null;
       },
       maxLength: 50,
-      controller: titleTextControler,
+      controller: textControler,
       decoration: InputDecoration(
-        labelText: 'Title',
-        hintText: 'Enter scenario title',
+        labelText: label,
+        hintText: 'Enter $title',
         filled: true,
         fillColor: colorTheme.surfaceContainer,
         enabledBorder: _inputBorderOutline(colorTheme.primaryContainer),
